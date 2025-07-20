@@ -312,237 +312,223 @@
   </div>
 
   <script>
-    const fileInput = document.getElementById("fileInput");
-    const imageContainer = document.getElementById("imageContainer");
-    const addImageButton = document.getElementById("addImageButton");
-    const convertButton = document.getElementById("convertButton");
-    const clearButton = document.getElementById("clearButton");
-    const pdfDownloadLink = document.getElementById("pdfDownloadLink");
-    const loadingIndicator = document.getElementById("loading");
-    const intro = document.getElementById("intro");
-    const dropArea = document.getElementById("dropArea");
-    const progressContainer = document.getElementById("progressContainer");
-    const progressBar = document.getElementById("progressBar");
+const fileInput = document.getElementById("fileInput");
+const imageContainer = document.getElementById("imageContainer");
+const addImageButton = document.getElementById("addImageButton");
+const convertButton = document.getElementById("convertButton");
+const clearButton = document.getElementById("clearButton");
+const pdfDownloadLink = document.getElementById("pdfDownloadLink");
+const loadingIndicator = document.getElementById("loading");
+const intro = document.getElementById("intro");
+const dropArea = document.getElementById("dropArea");
+const progressContainer = document.getElementById("progressContainer");
+const progressBar = document.getElementById("progressBar");
 
-    let imageFiles = [];
+let imageFiles = [];
 
-    // Intro fadeout
-    intro.addEventListener("animationend", () => {
-      intro.style.display = "none";
-    });
+// Intro fadeout
+intro.addEventListener("animationend", () => {
+  intro.style.display = "none";
+});
 
-    // Render thumbnails with filename & size
-    function renderImages() {
-      imageContainer.innerHTML = "";
-      imageFiles.forEach((file, index) => {
-        const wrapper = document.createElement("div");
-        wrapper.className = "image-wrapper";
-        wrapper.setAttribute("draggable", "true");
-        wrapper.setAttribute("data-index", index);
+// Render thumbnails with filename & size
+function renderImages() {
+  imageContainer.innerHTML = "";
+  imageFiles.forEach((file, index) => {
+    const wrapper = document.createElement("div");
+    wrapper.className = "image-wrapper";
+    wrapper.setAttribute("draggable", "true");
+    wrapper.setAttribute("data-index", index);
 
-        const img = document.createElement("img");
-        img.className = "image-item";
-        img.src = URL.createObjectURL(file);
-        img.alt = `صورة رقم ${index + 1}`;
+    const img = document.createElement("img");
+    img.className = "image-item";
+    img.src = URL.createObjectURL(file);
+    img.alt = `صورة رقم ${index + 1}`;
 
-        const info = document.createElement("div");
-        info.className = "image-info";
-        info.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+    const info = document.createElement("div");
+    info.className = "image-info";
+    info.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
 
-        const removeBtn = document.createElement("button");
-        removeBtn.className = "remove-btn";
-        removeBtn.title = "حذف الصورة";
-        removeBtn.textContent = "×";
-        removeBtn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          removeImage(index);
-        });
-
-        wrapper.appendChild(img);
-        wrapper.appendChild(removeBtn);
-        wrapper.appendChild(info);
-        imageContainer.appendChild(wrapper);
-      });
-      addDragAndDropHandlers();
-    }
-
-    function removeImage(index) {
-      imageFiles.splice(index, 1);
-      renderImages();
-      pdfDownloadLink.style.display = "none";
-    }
-
-    addImageButton.addEventListener("click", () => {
-      fileInput.click();
-    });
-
-    fileInput.addEventListener("change", (e) => {
-      const files = Array.from(e.target.files).filter(file => file.type.startsWith("image/"));
-      imageFiles = imageFiles.concat(files);
-      renderImages();
-      fileInput.value = "";
-      pdfDownloadLink.style.display = "none";
-    });
-
-    clearButton.addEventListener("click", () => {
-      if (imageFiles.length === 0) return;
-      if (confirm("هل أنت متأكد من مسح جميع الصور؟")) {
-        imageFiles = [];
-        renderImages();
-        pdfDownloadLink.style.display = "none";
-      }
-    });
-
-    // Drag & Drop for files
-    dropArea.addEventListener("dragover", (e) => {
-      e.preventDefault();
-      dropArea.classList.add("dragover");
-    });
-    dropArea.addEventListener("dragleave", (e) => {
-      e.preventDefault();
-      dropArea.classList.remove("dragover");
-    });
-    dropArea.addEventListener("drop", (e) => {
-      e.preventDefault();
-      dropArea.classList.remove("dragover");
-      const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith("image/"));
-      if (files.length > 0) {
-        imageFiles = imageFiles.concat(files);
-        renderImages();
-        pdfDownloadLink.style.display = "none";
-      }
-    });
-    dropArea.addEventListener("click", () => {
-      fileInput.click();
-    });
-
-    // Drag to reorder images inside container
-    function addDragAndDropHandlers() {
-      const wrappers = document.querySelectorAll(".image-wrapper");
-
-      wrappers.forEach(wrapper => {
-        wrapper.addEventListener("dragstart", dragStart);
-        wrapper.addEventListener("dragover", dragOver);
-        wrapper.addEventListener("drop", drop);
-        wrapper.addEventListener("dragend", dragEnd);
-      });
-    }
-
-    let dragSrcIndex = null;
-
-    function dragStart(e) {
-      dragSrcIndex = Number(e.currentTarget.getAttribute("data-index"));
-      e.dataTransfer.effectAllowed = "move";
-      e.currentTarget.style.opacity = "0.5";
-    }
-
-    function dragOver(e) {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = "move";
-      const target = e.currentTarget;
-      target.style.boxShadow = "0 0 12px 3px #06d6a0";
-    }
-
-    function drop(e) {
+    const removeBtn = document.createElement("button");
+    removeBtn.className = "remove-btn";
+    removeBtn.title = "حذف الصورة";
+    removeBtn.textContent = "×";
+    removeBtn.addEventListener("click", (e) => {
       e.stopPropagation();
-      const targetIndex = Number(e.currentTarget.getAttribute("data-index"));
-      if (dragSrcIndex !== null && dragSrcIndex !== targetIndex) {
-        const draggedFile = imageFiles[dragSrcIndex];
-        imageFiles.splice(dragSrcIndex, 1);
-        imageFiles.splice(targetIndex, 0, draggedFile);
-        renderImages();
-        pdfDownloadLink.style.display = "none";
-      }
-      e.currentTarget.style.boxShadow = "none";
-    }
-
-    function dragEnd(e) {
-      e.currentTarget.style.opacity = "1";
-      e.currentTarget.style.boxShadow = "none";
-    }
-
-    // Convert images to PDF
-    convertButton.addEventListener("click", async () => {
-      if (imageFiles.length === 0) {
-        alert("يرجى إضافة صور أولاً");
-        return;
-      }
-      loadingIndicator.style.display = "block";
-      progressContainer.style.display = "block";
-      progressBar.style.width = "0%";
-      pdfDownloadLink.style.display = "none";
-
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "pt",
-        format: "a4"
-      });
-
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-
-      for (let i = 0; i < imageFiles.length; i++) {
-        const file = imageFiles[i];
-        const imgData = await readFileAsDataURL(file);
-
-        const img = await loadImage(imgData);
-
-        // Calculate dimensions to fit inside A4 page with margin
-        const margin = 20;
-        let imgWidth = img.width;
-        let imgHeight = img.height;
-        let ratio = Math.min(
-          (pdfWidth - 2 * margin) / imgWidth,
-          (pdfHeight - 2 * margin) / imgHeight,
-          1
-        );
-        imgWidth *= ratio;
-        imgHeight *= ratio;
-
-        if (i > 0) {
-          pdf.addPage();
-        }
-        pdf.addImage(
-          imgData,
-          "JPEG",
-          (pdfWidth - imgWidth) / 2,
-          (pdfHeight - imgHeight) / 2,
-          imgWidth,
-          imgHeight
-        );
-
-        // Update progress
-        progressBar.style.width = `${((i + 1) / imageFiles.length) * 100}%`;
-      }
-
-      loadingIndicator.style.display = "none";
-      progressContainer.style.display = "none";
-
-      const pdfBlob = pdf.output("blob");
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-      pdfDownloadLink.href = pdfUrl;
-      pdfDownloadLink.style.display = "inline-block";
-      pdfDownloadLink.textContent = `📥 تحميل PDF (${imageFiles.length} صفحة)`;
+      removeImage(index);
     });
 
-    function readFileAsDataURL(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = () => reject(new Error("فشل في قراءة الملف"));
-        reader.readAsDataURL(file);
+    wrapper.appendChild(img);
+    wrapper.appendChild(removeBtn);
+    wrapper.appendChild(info);
+    imageContainer.appendChild(wrapper);
+  });
+  addDragAndDropHandlers();
+}
+
+function removeImage(index) {
+  imageFiles.splice(index, 1);
+  renderImages();
+  pdfDownloadLink.style.display = "none";
+}
+
+addImageButton.addEventListener("click", () => {
+  fileInput.click();
+});
+
+fileInput.addEventListener("change", (e) => {
+  const files = Array.from(e.target.files).filter(file => file.type.startsWith("image/"));
+  imageFiles = imageFiles.concat(files);
+  renderImages();
+  fileInput.value = "";
+  pdfDownloadLink.style.display = "none";
+});
+
+clearButton.addEventListener("click", () => {
+  if (imageFiles.length === 0) return;
+  if (confirm("هل أنت متأكد من مسح جميع الصور؟")) {
+    imageFiles = [];
+    renderImages();
+    pdfDownloadLink.style.display = "none";
+  }
+});
+
+// Drag & Drop for files
+dropArea.addEventListener("dragover", (e) => {
+  e.preventDefault();
+  dropArea.classList.add("dragover");
+});
+dropArea.addEventListener("dragleave", (e) => {
+  e.preventDefault();
+  dropArea.classList.remove("dragover");
+});
+dropArea.addEventListener("drop", (e) => {
+  e.preventDefault();
+  dropArea.classList.remove("dragover");
+  const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith("image/"));
+  if (files.length > 0) {
+    imageFiles = imageFiles.concat(files);
+    renderImages();
+    pdfDownloadLink.style.display = "none";
+  }
+});
+dropArea.addEventListener("click", () => {
+  fileInput.click();
+});
+
+// Drag to reorder images inside container
+function addDragAndDropHandlers() {
+  const wrappers = document.querySelectorAll(".image-wrapper");
+
+  wrappers.forEach(wrapper => {
+    wrapper.addEventListener("dragstart", dragStart);
+    wrapper.addEventListener("dragover", dragOver);
+    wrapper.addEventListener("drop", drop);
+    wrapper.addEventListener("dragend", dragEnd);
+  });
+}
+
+let dragSrcIndex = null;
+
+function dragStart(e) {
+  dragSrcIndex = Number(e.currentTarget.getAttribute("data-index"));
+  e.dataTransfer.effectAllowed = "move";
+  e.currentTarget.style.opacity = "0.5";
+}
+
+function dragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = "move";
+  const target = e.currentTarget;
+  target.style.boxShadow = "0 0 12px 3px #06d6a0";
+}
+
+function drop(e) {
+  e.stopPropagation();
+  const targetIndex = Number(e.currentTarget.getAttribute("data-index"));
+  if (dragSrcIndex !== null && dragSrcIndex !== targetIndex) {
+    const draggedFile = imageFiles[dragSrcIndex];
+    imageFiles.splice(dragSrcIndex, 1);
+    imageFiles.splice(targetIndex, 0, draggedFile);
+    renderImages();
+    pdfDownloadLink.style.display = "none";
+  }
+  e.currentTarget.style.boxShadow = "none";
+}
+
+function dragEnd(e) {
+  e.currentTarget.style.opacity = "1";
+  e.currentTarget.style.boxShadow = "none";
+}
+
+// Convert images to PDF (page size matches each image's natural size)
+convertButton.addEventListener("click", async () => {
+  if (imageFiles.length === 0) {
+    alert("يرجى إضافة صور أولاً");
+    return;
+  }
+  loadingIndicator.style.display = "block";
+  progressContainer.style.display = "block";
+  progressBar.style.width = "0%";
+  pdfDownloadLink.style.display = "none";
+
+  const { jsPDF } = window.jspdf;
+  let pdf = null;
+
+  for (let i = 0; i < imageFiles.length; i++) {
+    const file = imageFiles[i];
+    const imgData = await readFileAsDataURL(file);
+    const img = await loadImage(imgData);
+
+    const pdfWidth = img.width;
+    const pdfHeight = img.height;
+
+    if (i === 0) {
+      // Create PDF with size of first image
+      pdf = new jsPDF({
+        orientation: pdfWidth >= pdfHeight ? "landscape" : "portrait",
+        unit: "pt",
+        format: [pdfWidth, pdfHeight],
       });
+    } else {
+      // Add a new page with size of current image
+      pdf.addPage([pdfWidth, pdfHeight], pdfWidth >= pdfHeight ? "landscape" : "portrait");
     }
 
-    function loadImage(src) {
-      return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.onload = () => resolve(img);
-        img.onerror = () => reject(new Error("فشل في تحميل الصورة"));
-        img.src = src;
-      });
-    }
+    pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
+
+    // Update progress bar
+    progressBar.style.width = `${((i + 1) / imageFiles.length) * 100}%`;
+  }
+
+  loadingIndicator.style.display = "none";
+  progressContainer.style.display = "none";
+
+  const pdfBlob = pdf.output("blob");
+  const pdfUrl = URL.createObjectURL(pdfBlob);
+  pdfDownloadLink.href = pdfUrl;
+  pdfDownloadLink.style.display = "inline-block";
+  pdfDownloadLink.textContent = `📥 تحميل PDF (${imageFiles.length} صفحة)`;
+});
+
+function readFileAsDataURL(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(new Error("فشل في قراءة الملف"));
+    reader.readAsDataURL(file);
+  });
+}
+
+function loadImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error("فشل في تحميل الصورة"));
+    img.src = src;
+  });
+}
+
   </script>
 </body>
 </html>
