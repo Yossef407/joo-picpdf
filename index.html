@@ -7,528 +7,397 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Playpen+Sans+Arabic:wght@400;700&display=swap"
-    rel="stylesheet"
-  />
-    <link
     href="https://fonts.googleapis.com/css2?family=Playpen+Sans+Arabic:wght@400;700&family=Cairo:wght@600&display=swap"
     rel="stylesheet"
   />
   <style>
-    /* Reset & basics */
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     body {
-      margin: 0;
-      padding: 0;
-      direction: rtl;
-       font-family: "Playpen Sans Arabic", cursive;
-      background: #121212;
+      min-height: 100vh;
+      font-family: "Playpen Sans Arabic", cursive;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: #000;
       color: #e0e0e0;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
       user-select: none;
+      transition: background 0.4s, color 0.4s;
     }
+    body.theme-black { background: #000; color: #e0e0e0; }
+    body.theme-grey  { background: #2b2b2b; color: #f2f2f2; }
+    body.theme-white { background: #fafafa; color: #222; }
 
     #intro {
-      position: fixed;
-      inset: 0;
-      background: #121212;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.8rem;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      color: #06d6a0;
-      opacity: 1;
-      z-index: 9999;
+      position: fixed; inset: 0;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem; font-weight: 700; letter-spacing: 0.15em;
+      color: #06d6a0; z-index: 9999;
       animation: fadeOut 1s ease forwards;
-      animation-delay: 2.5s;
+      animation-delay: 2.4s;
     }
     @keyframes fadeOut {
-      to {
-        opacity: 0;
-        visibility: hidden;
-        pointer-events: none;
-      }
+      to { opacity: 0; visibility: hidden; pointer-events: none; }
     }
 
     header {
-      background-color: #0d3b3e;
-      padding: 25px 20px;
+      width: 100%;
+      backdrop-filter: blur(6px);
+      background: rgba(0,0,0,0.25);
+      padding: 18px;
       text-align: center;
-      font-size: 1.8em;
+      font-size: 1.9em;
       font-weight: bold;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
-      user-select: none;
+      position: sticky; top: 0;
+      z-index: 10;
     }
 
     .container {
-      max-width: 960px;
-      margin: 20px auto 60px auto;
-      padding: 20px;
+      width: 100%; max-width: 900px;
+      margin: 22px auto;
+      padding: 24px;
+      border-radius: 20px;
+      background: #111;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.7);
+      transition: background 0.4s;
+    }
+    body.theme-grey  .container { background: #3a3a3a; }
+    body.theme-white .container { background: #fff; }
+
+    #themeButtons {
       text-align: center;
-      background: #1a1a1a;
-      border-radius: 12px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.9);
-      transition: background 0.3s ease;
+      margin-bottom: 16px;
     }
-
-    /* Drag & Drop Area */
-    #dropArea {
-      border: 3px dashed #06d6a0;
-      border-radius: 12px;
-      padding: 25px;
-      margin-bottom: 20px;
-      color: #06d6a0;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.3s ease, border-color 0.3s ease;
-      user-select: none;
-    }
-    #dropArea.dragover {
-      background-color: #064e40;
-      border-color: #04b67e;
-      color: #04b67e;
-    }
-
-    input[type="file"] {
-      display: none;
-    }
-
-    .button-group {
-      margin: 20px 0;
-    }
-    button {
+    #themeButtons button {
+      margin: 4px;
+      padding: 10px 22px;
       font-family: 'Cairo', sans-serif;
       font-weight: 600;
-      /* subtle glow */
-      box-shadow: 0 0 12px rgba(6, 214, 160, 0.25);
-      /* rest stays */
-      padding: 12px 26px;
-      margin: 6px 8px;
       border: none;
-      border-radius: 10px;
-      font-size: 1rem;
+      border-radius: 50px;
+      font-size: 0.95rem;
       cursor: pointer;
-      color: #e0e0e0;
-      transition: background-color 0.3s ease, transform 0.15s ease, box-shadow 0.3s ease;
-      user-select: none;
-      background-color: #064e40;
+      transition: background 0.3s, transform 0.2s;
     }
-	
-    button#addImageButton {
-      background-color: #118ab2;
-      box-shadow: 0 0 12px rgba(17, 138, 178, 0.25);
-    }
-    button#addImageButton:hover {
-      background-color: #0a6a8c;
-      box-shadow: 0 0 22px rgba(17, 138, 178, 0.35);
-    }
+    #theme-black-btn { background: #06d6a0; color: #000; }
+    #theme-grey-btn  { background: #b0b0b0; color: #000; }
+    #theme-white-btn { background: #333;    color: #fff; }
+    #themeButtons button:hover { transform: scale(1.05); }
 
-    button#convertButton {
-      background-color: #06d6a0;
-      color: #121212;
-      box-shadow: 0 0 12px rgba(6, 214, 160, 0.25);
+    #dropArea {
+      border: 2px dashed;
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 24px;
+      font-weight: 600;
+      cursor: pointer;
+      text-transform: uppercase;
+      font-size: 1.05rem;
+      transition: all 0.3s ease;
     }
-    button#convertButton:hover {
-      background-color: #04b67e;
-      box-shadow: 0 0 22px rgba(6, 214, 160, 0.35);
-    }
-    button#clearButton {
-      background-color: #ef476f;
-      box-shadow: 0 0 12px rgba(239, 71, 111, 0.25);
-    }
-    button#clearButton:hover {
-      background-color: #c83a5a;
-      box-shadow: 0 0 22px rgba(239, 71, 111, 0.35);
-    }
+    body.theme-black #dropArea { border-color: #06d6a0; color: #06d6a0; background: rgba(6,214,160,0.06); }
+    body.theme-grey  #dropArea { border-color: #b3b3b3; color: #b3b3b3; background: rgba(179,179,179,0.06); }
+    body.theme-white #dropArea { border-color: #444; color: #444; background: rgba(68,68,68,0.04); }
+    #dropArea.dragover { transform: scale(1.02); background: rgba(255,255,255,0.1); }
 
-    /* Image container & thumbnails */
-    #imageContainer {
+    input[type="file"] { display: none; }
+
+    .button-group {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 16px;
-      margin-top: 10px;
-      min-height: 120px;
+      gap: 14px;
+      margin-bottom: 26px;
     }
-    .image-wrapper {
-      position: relative;
-      width: 140px;
-      height: 140px;
-      border-radius: 14px;
-      background: #222;
-      box-shadow: 0 4px 14px rgba(6, 214, 160, 0.15);
-      overflow: hidden;
-      cursor: grab;
-      transition: box-shadow 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      user-select: none;
-    }
-    .image-wrapper:active {
-      cursor: grabbing;
-    }
-    .image-wrapper:hover {
-      box-shadow: 0 6px 22px rgba(6, 214, 160, 0.5);
-    }
-
-    .image-item {
-      flex-grow: 1;
-      width: 100%;
-      object-fit: cover;
-      border-radius: 14px 14px 0 0;
-      user-select: none;
-      pointer-events: none;
-      transition: transform 0.3s ease;
-    }
-    .image-wrapper:hover .image-item {
-      transform: scale(1.1);
-    }
-
-    /* Image info below thumbnails */
-    .image-info {
-      font-size: 0.75rem;
-      color: #a0a0a0;
-      padding: 4px 8px;
-      background: #151515;
-      border-radius: 0 0 14px 14px;
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      user-select: text;
-    }
-
-    .remove-btn {
-      position: absolute;
-      top: 6px;
-      left: 6px;
-      background-color: rgba(239, 71, 111, 0.9);
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 26px;
-      height: 26px;
-      font-size: 18px;
-      line-height: 26px;
-      text-align: center;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      user-select: none;
-      z-index: 5;
-    }
-    .remove-btn:hover {
-      background-color: #ef476fcc;
-    }
-
-    #pdfDownloadLink {
-      display: none;
-      margin-top: 28px;
-      font-weight: 700;
-      color: #06d6a0;
-      text-decoration: none;
-      font-size: 1.3em;
-      transition: color 0.3s ease;
-      user-select: none;
-      cursor: pointer;
-    }
-    #pdfDownloadLink:hover {
-      color: #04b67e;
-      text-decoration: underline;
-    }
-
-    #loading {
-      display: none;
-      margin-top: 16px;
-      font-size: 1em;
-      color: #bbb;
+    .button-group button {
+      padding: 14px 30px;
+      font-family: 'Cairo', sans-serif;
       font-weight: 600;
-      user-select: none;
+      font-size: 1rem;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      transition: transform 0.2s, box-shadow 0.3s;
     }
+    .button-group button:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,0.5); }
+
+    #addImageButton { background: #118ab2; color: #fff; }
+    #convertButton  { background: #06d6a0; color: #000; }
+    #clearButton    { background: #ef476f; color: #fff; }
 
     #progressContainer {
-      width: 100%;
-      height: 8px;
-      background: #333;
-      border-radius: 8px;
+      width: 100%; max-width: 600px;
+      height: 10px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 10px;
       overflow: hidden;
-      margin: 10px auto 20px auto;
-      max-width: 500px;
       display: none;
-      user-select: none;
+      margin: 16px auto 24px;
     }
     #progressBar {
       height: 100%;
       background: #06d6a0;
       width: 0;
-      transition: width 0.3s ease;
+      transition: width 0.3s;
     }
 
-    @media (max-width: 600px) {
-      .image-wrapper {
-        width: 110px;
-        height: 110px;
-      }
-      header {
-        font-size: 1.4em;
-      }
-      button {
-        font-size: 0.9rem;
-        padding: 10px 20px;
-      }
-      #dropArea {
-        font-size: 0.9rem;
-        padding: 18px;
-      }
+    #loading {
+      display: none;
+      font-size: 1.05rem;
+      color: #bbb;
+      margin-bottom: 20px;
+    }
+
+    #imageContainer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 18px;
+      margin-bottom: 24px;
+      min-height: 140px;
+    }
+    .image-wrapper {
+      position: relative;
+      width: 150px; height: 150px;
+      border-radius: 18px;
+      overflow: hidden;
+      cursor: grab;
+      transition: transform 0.3s, box-shadow 0.3s;
+      background: #2b2b2b;
+      display: flex;
+      flex-direction: column;
+    }
+    .image-wrapper:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(6,214,160,0.5); }
+    .image-item {
+      width: 100%;
+      flex-grow: 1;
+      object-fit: cover;
+      transition: transform 0.4s;
+    }
+    .image-wrapper:hover .image-item { transform: scale(1.1); }
+    .image-info {
+      padding: 8px;
+      font-size: 0.8rem;
+      background: rgba(0,0,0,0.3);
+      text-align: center;
+      border-radius: 0 0 18px 18px;
+      color: #c0c0c0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .remove-btn {
+      position: absolute;
+      top: 8px; left: 8px;
+      background: rgba(239,71,111,0.9);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 30px; height: 30px;
+      font-size: 22px; line-height: 30px;
+      cursor: pointer;
+      transition: background 0.3s;
+      z-index: 3;
+    }
+    .remove-btn:hover { background: #ef476fcc; }
+
+    #pdfDownloadLink {
+      display: none;
+      margin-top: 28px;
+      font-weight: 700;
+      font-size: 1.35em;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    #pdfDownloadLink:hover { color: #04b67e; }
+
+    @media (max-width: 768px) {
+      .container { padding: 20px; }
+      .button-group button { padding: 12px 26px; font-size: 0.95rem; }
+      #dropArea { padding: 24px; font-size: 1rem; }
+      .image-wrapper { width: 120px; height: 120px; }
+    }
+    @media (max-width: 480px) {
+      .button-group { flex-direction: column; }
+      .button-group button { width: 100%; }
+      #pdfDownloadLink { font-size: 1.2em; }
     }
   </style>
 </head>
-<body>
+<body class="theme-black">
   <div id="intro">By Joo</div>
-
   <header>محول الصور إلى بي دي اف</header>
-
   <div class="container">
+    <div id="themeButtons">
+      <button id="theme-black-btn">ثيم أسود</button>
+      <button id="theme-grey-btn">ثيم رمادي</button>
+      <button id="theme-white-btn">ثيم أبيض</button>
+    </div>
     <input type="file" id="fileInput" multiple accept="image/*" />
-
     <div id="dropArea">اسحب الصور هنا أو اضغط لاختيارها</div>
-
     <div class="button-group">
       <button id="addImageButton">📷 اختر صور</button>
       <button id="convertButton">🧾 تحويل إلى PDF</button>
       <button id="clearButton">🗑️ مسح الكل</button>
     </div>
-
     <div id="progressContainer"><div id="progressBar"></div></div>
-
     <div id="imageContainer" aria-live="polite" aria-label="صور مختارة"></div>
-
     <a id="pdfDownloadLink" target="_blank" aria-label="رابط تحميل ملف PDF">📥 تحميل بي دي اف</a>
     <div id="loading">...جاري تحويل الصور إلى بي دي اف، يرجى الانتظار</div>
   </div>
 
   <script>
-const fileInput = document.getElementById("fileInput");
-const imageContainer = document.getElementById("imageContainer");
-const addImageButton = document.getElementById("addImageButton");
-const convertButton = document.getElementById("convertButton");
-const clearButton = document.getElementById("clearButton");
-const pdfDownloadLink = document.getElementById("pdfDownloadLink");
-const loadingIndicator = document.getElementById("loading");
-const intro = document.getElementById("intro");
-const dropArea = document.getElementById("dropArea");
-const progressContainer = document.getElementById("progressContainer");
-const progressBar = document.getElementById("progressBar");
-
-let imageFiles = [];
-
-// Intro fadeout
-intro.addEventListener("animationend", () => {
-  intro.style.display = "none";
-});
-
-// Render thumbnails with filename & size
-function renderImages() {
-  imageContainer.innerHTML = "";
-  imageFiles.forEach((file, index) => {
-    const wrapper = document.createElement("div");
-    wrapper.className = "image-wrapper";
-    wrapper.setAttribute("draggable", "true");
-    wrapper.setAttribute("data-index", index);
-
-    const img = document.createElement("img");
-    img.className = "image-item";
-    img.src = URL.createObjectURL(file);
-    img.alt = `صورة رقم ${index + 1}`;
-
-    const info = document.createElement("div");
-    info.className = "image-info";
-    info.textContent = `${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
-
-    const removeBtn = document.createElement("button");
-    removeBtn.className = "remove-btn";
-    removeBtn.title = "حذف الصورة";
-    removeBtn.textContent = "×";
-    removeBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      removeImage(index);
+    const themeButtons = {
+      black: document.getElementById('theme-black-btn'),
+      grey: document.getElementById('theme-grey-btn'),
+      white: document.getElementById('theme-white-btn')
+    };
+    Object.entries(themeButtons).forEach(([theme, btn]) => {
+      btn.addEventListener('click', () => document.body.className = 'theme-' + theme);
     });
 
-    wrapper.appendChild(img);
-    wrapper.appendChild(removeBtn);
-    wrapper.appendChild(info);
-    imageContainer.appendChild(wrapper);
-  });
-  addDragAndDropHandlers();
-}
+    // السكربت الأصلي بدون تعديل النصوص
+    const fileInput = document.getElementById("fileInput");
+    const imageContainer = document.getElementById("imageContainer");
+    const addImageButton = document.getElementById("addImageButton");
+    const convertButton = document.getElementById("convertButton");
+    const clearButton = document.getElementById("clearButton");
+    const pdfDownloadLink = document.getElementById("pdfDownloadLink");
+    const loadingIndicator = document.getElementById("loading");
+    const intro = document.getElementById("intro");
+    const dropArea = document.getElementById("dropArea");
+    const progressContainer = document.getElementById("progressContainer");
+    const progressBar = document.getElementById("progressBar");
+    let imageFiles = [];
+    intro.addEventListener("animationend", () => { intro.style.display = "none"; });
 
-function removeImage(index) {
-  imageFiles.splice(index, 1);
-  renderImages();
-  pdfDownloadLink.style.display = "none";
-}
-
-addImageButton.addEventListener("click", () => {
-  fileInput.click();
-});
-
-fileInput.addEventListener("change", (e) => {
-  const files = Array.from(e.target.files).filter(file => file.type.startsWith("image/"));
-  imageFiles = imageFiles.concat(files);
-  renderImages();
-  fileInput.value = "";
-  pdfDownloadLink.style.display = "none";
-});
-
-clearButton.addEventListener("click", () => {
-  if (imageFiles.length === 0) return;
-  if (confirm("هل أنت متأكد من مسح جميع الصور؟")) {
-    imageFiles = [];
-    renderImages();
-    pdfDownloadLink.style.display = "none";
-  }
-});
-
-// Drag & Drop for files
-dropArea.addEventListener("dragover", (e) => {
-  e.preventDefault();
-  dropArea.classList.add("dragover");
-});
-dropArea.addEventListener("dragleave", (e) => {
-  e.preventDefault();
-  dropArea.classList.remove("dragover");
-});
-dropArea.addEventListener("drop", (e) => {
-  e.preventDefault();
-  dropArea.classList.remove("dragover");
-  const files = Array.from(e.dataTransfer.files).filter(file => file.type.startsWith("image/"));
-  if (files.length > 0) {
-    imageFiles = imageFiles.concat(files);
-    renderImages();
-    pdfDownloadLink.style.display = "none";
-  }
-});
-dropArea.addEventListener("click", () => {
-  fileInput.click();
-});
-
-// Drag to reorder images inside container
-function addDragAndDropHandlers() {
-  const wrappers = document.querySelectorAll(".image-wrapper");
-
-  wrappers.forEach(wrapper => {
-    wrapper.addEventListener("dragstart", dragStart);
-    wrapper.addEventListener("dragover", dragOver);
-    wrapper.addEventListener("drop", drop);
-    wrapper.addEventListener("dragend", dragEnd);
-  });
-}
-
-let dragSrcIndex = null;
-
-function dragStart(e) {
-  dragSrcIndex = Number(e.currentTarget.getAttribute("data-index"));
-  e.dataTransfer.effectAllowed = "move";
-  e.currentTarget.style.opacity = "0.5";
-}
-
-function dragOver(e) {
-  e.preventDefault();
-  e.dataTransfer.dropEffect = "move";
-  const target = e.currentTarget;
-  target.style.boxShadow = "0 0 12px 3px #06d6a0";
-}
-
-function drop(e) {
-  e.stopPropagation();
-  const targetIndex = Number(e.currentTarget.getAttribute("data-index"));
-  if (dragSrcIndex !== null && dragSrcIndex !== targetIndex) {
-    const draggedFile = imageFiles[dragSrcIndex];
-    imageFiles.splice(dragSrcIndex, 1);
-    imageFiles.splice(targetIndex, 0, draggedFile);
-    renderImages();
-    pdfDownloadLink.style.display = "none";
-  }
-  e.currentTarget.style.boxShadow = "none";
-}
-
-function dragEnd(e) {
-  e.currentTarget.style.opacity = "1";
-  e.currentTarget.style.boxShadow = "none";
-}
-
-// Convert images to PDF (page size matches each image's natural size)
-convertButton.addEventListener("click", async () => {
-  if (imageFiles.length === 0) {
-    alert("يرجى إضافة صور أولاً");
-    return;
-  }
-  loadingIndicator.style.display = "block";
-  progressContainer.style.display = "block";
-  progressBar.style.width = "0%";
-  pdfDownloadLink.style.display = "none";
-
-  const { jsPDF } = window.jspdf;
-  let pdf = null;
-
-  for (let i = 0; i < imageFiles.length; i++) {
-    const file = imageFiles[i];
-    const imgData = await readFileAsDataURL(file);
-    const img = await loadImage(imgData);
-
-    const pdfWidth = img.width;
-    const pdfHeight = img.height;
-
-    if (i === 0) {
-      // Create PDF with size of first image
-      pdf = new jsPDF({
-        orientation: pdfWidth >= pdfHeight ? "landscape" : "portrait",
-        unit: "pt",
-        format: [pdfWidth, pdfHeight],
+    function renderImages() {
+      imageContainer.innerHTML = "";
+      imageFiles.forEach((file, index) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "image-wrapper";
+        wrapper.setAttribute("draggable", "true");
+        wrapper.setAttribute("data-index", index);
+        const img = document.createElement("img");
+        img.className = "image-item";
+        img.src = URL.createObjectURL(file);
+        img.alt = `صورة رقم ${index + 1}`;
+        const info = document.createElement("div");
+        info.className = "image-info";
+        info.textContent = `${file.name} (${(file.size/1024).toFixed(1)} KB)`;
+        const removeBtn = document.createElement("button");
+        removeBtn.className = "remove-btn";
+        removeBtn.title = "حذف الصورة";
+        removeBtn.textContent = "×";
+        removeBtn.addEventListener("click", (e) => { e.stopPropagation(); removeImage(index); });
+        wrapper.append(img, removeBtn, info);
+        imageContainer.appendChild(wrapper);
       });
-    } else {
-      // Add a new page with size of current image
-      pdf.addPage([pdfWidth, pdfHeight], pdfWidth >= pdfHeight ? "landscape" : "portrait");
+      addDragAndDropHandlers();
     }
+    function removeImage(i) { imageFiles.splice(i,1); renderImages(); pdfDownloadLink.style.display="none"; }
 
-    pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
+    addImageButton.addEventListener("click", () => fileInput.click());
+    fileInput.addEventListener("change", (e) => {
+      const files = Array.from(e.target.files).filter(f=>f.type.startsWith("image/"));
+      imageFiles = imageFiles.concat(files);
+      renderImages();
+      fileInput.value="";
+      pdfDownloadLink.style.display="none";
+    });
+    clearButton.addEventListener("click", () => {
+      if (!imageFiles.length) return;
+      if (confirm("هل أنت متأكد من مسح جميع الصور؟")) {
+        imageFiles = [];
+        renderImages();
+        pdfDownloadLink.style.display="none";
+      }
+    });
 
-    // Update progress bar
-    progressBar.style.width = `${((i + 1) / imageFiles.length) * 100}%`;
-  }
+    dropArea.addEventListener("dragover", e => { e.preventDefault(); dropArea.classList.add("dragover"); });
+    dropArea.addEventListener("dragleave", e => { e.preventDefault(); dropArea.classList.remove("dragover"); });
+    dropArea.addEventListener("drop", e => {
+      e.preventDefault();
+      dropArea.classList.remove("dragover");
+      const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith("image/"));
+      if (files.length) { imageFiles = imageFiles.concat(files); renderImages(); pdfDownloadLink.style.display="none"; }
+    });
+    dropArea.addEventListener("click", () => fileInput.click());
 
-  loadingIndicator.style.display = "none";
-  progressContainer.style.display = "none";
+    function addDragAndDropHandlers() {
+      document.querySelectorAll(".image-wrapper").forEach(w => {
+        w.addEventListener("dragstart", dragStart);
+        w.addEventListener("dragover", dragOver);
+        w.addEventListener("drop", drop);
+        w.addEventListener("dragend", dragEnd);
+      });
+    }
+    let dragSrcIndex = null;
+    function dragStart(e) { dragSrcIndex = +e.currentTarget.dataset.index; e.dataTransfer.effectAllowed = "move"; e.currentTarget.style.opacity = "0.5"; }
+    function dragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = "move"; e.currentTarget.style.boxShadow = "0 0 12px 3px #06d6a0"; }
+    function drop(e) {
+      e.stopPropagation();
+      const targetIndex = +e.currentTarget.dataset.index;
+      if (dragSrcIndex !== null && dragSrcIndex !== targetIndex) {
+        const d = imageFiles.splice(dragSrcIndex, 1)[0];
+        imageFiles.splice(targetIndex, 0, d);
+        renderImages();
+        pdfDownloadLink.style.display="none";
+      }
+      e.currentTarget.style.boxShadow = "none";
+    }
+    function dragEnd(e) { e.currentTarget.style.opacity = "1"; e.currentTarget.style.boxShadow = "none"; }
 
-  const pdfBlob = pdf.output("blob");
-  const pdfUrl = URL.createObjectURL(pdfBlob);
-  pdfDownloadLink.href = pdfUrl;
-  pdfDownloadLink.style.display = "inline-block";
-  pdfDownloadLink.textContent = `📥 تحميل PDF (${imageFiles.length} صفحة)`;
-});
+    convertButton.addEventListener("click", async () => {
+      if (!imageFiles.length) { alert("يرجى إضافة صور أولاً"); return; }
+      loadingIndicator.style.display = "block";
+      progressContainer.style.display = "block";
+      progressBar.style.width = "0%";
+      pdfDownloadLink.style.display = "none";
+      const { jsPDF } = window.jspdf;
+      let pdf = null;
+      for (let i = 0; i < imageFiles.length; i++) {
+        const file = imageFiles[i];
+        const imgData = await readFileAsDataURL(file);
+        const img = await loadImage(imgData);
+        const w = img.width, h = img.height;
+        if (i === 0) {
+          pdf = new jsPDF({
+            orientation: w >= h ? "landscape" : "portrait",
+            unit: "pt",
+            format: [w, h]
+          });
+        } else {
+          pdf.addPage([w, h], w >= h ? "landscape" : "portrait");
+        }
+        pdf.addImage(imgData, "JPEG", 0, 0, w, h);
+        progressBar.style.width = ((i + 1) / imageFiles.length) * 100 + "%";
+      }
+      loadingIndicator.style.display = "none"; progressContainer.style.display = "none";
+      const blob = pdf.output("blob"); const url = URL.createObjectURL(blob);
+      pdfDownloadLink.href = url;
+      pdfDownloadLink.style.display = "inline-block";
+      pdfDownloadLink.textContent = `📥 تحميل PDF (${imageFiles.length} صفحة)`;
+    });
 
-function readFileAsDataURL(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = () => reject(new Error("فشل في قراءة الملف"));
-    reader.readAsDataURL(file);
-  });
-}
-
-function loadImage(src) {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error("فشل في تحميل الصورة"));
-    img.src = src;
-  });
-}
-
+    function readFileAsDataURL(file) {
+      return new Promise((res, rej) => {
+        const r = new FileReader();
+        r.onload = () => res(r.result);
+        r.onerror = () => rej("فشل في قراءة الملف");
+        r.readAsDataURL(file);
+      });
+    }
+    function loadImage(src) {
+      return new Promise((res, rej) => {
+        const img = new Image();
+        img.onload = () => res(img);
+        img.onerror = () => rej("فشل في تحميل الصورة");
+        img.src = src;
+      });
+    }
   </script>
 </body>
 </html>
