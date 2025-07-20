@@ -10,6 +10,10 @@
     href="https://fonts.googleapis.com/css2?family=Playpen+Sans+Arabic:wght@400;700&display=swap"
     rel="stylesheet"
   />
+    <link
+    href="https://fonts.googleapis.com/css2?family=Playpen+Sans+Arabic:wght@400;700&family=Cairo:wght@600&display=swap"
+    rel="stylesheet"
+  />
   <style>
     /* Reset & basics */
     * {
@@ -19,7 +23,7 @@
       margin: 0;
       padding: 0;
       direction: rtl;
-      font-family: "Playpen Sans Arabic", cursive;
+       font-family: "Playpen Sans Arabic", cursive;
       background: #121212;
       color: #e0e0e0;
       -webkit-font-smoothing: antialiased;
@@ -98,43 +102,48 @@
       margin: 20px 0;
     }
     button {
+      font-family: 'Cairo', sans-serif;
+      font-weight: 600;
+      /* subtle glow */
+      box-shadow: 0 0 12px rgba(6, 214, 160, 0.25);
+      /* rest stays */
       padding: 12px 26px;
       margin: 6px 8px;
       border: none;
       border-radius: 10px;
       font-size: 1rem;
       cursor: pointer;
-      font-weight: 600;
       color: #e0e0e0;
-      transition: background-color 0.3s ease, transform 0.15s ease;
-      box-shadow: 0 4px 10px rgba(6, 214, 160, 0.25);
+      transition: background-color 0.3s ease, transform 0.15s ease, box-shadow 0.3s ease;
       user-select: none;
       background-color: #064e40;
     }
+	
     button#addImageButton {
       background-color: #118ab2;
-      box-shadow: 0 4px 14px rgba(17, 138, 178, 0.5);
+      box-shadow: 0 0 12px rgba(17, 138, 178, 0.25);
     }
     button#addImageButton:hover {
       background-color: #0a6a8c;
-      transform: scale(1.05);
+      box-shadow: 0 0 22px rgba(17, 138, 178, 0.35);
     }
+
     button#convertButton {
       background-color: #06d6a0;
       color: #121212;
-      box-shadow: 0 4px 14px rgba(6, 214, 160, 0.7);
+      box-shadow: 0 0 12px rgba(6, 214, 160, 0.25);
     }
     button#convertButton:hover {
       background-color: #04b67e;
-      transform: scale(1.05);
+      box-shadow: 0 0 22px rgba(6, 214, 160, 0.35);
     }
     button#clearButton {
       background-color: #ef476f;
-      box-shadow: 0 4px 14px rgba(239, 71, 111, 0.7);
+      box-shadow: 0 0 12px rgba(239, 71, 111, 0.25);
     }
     button#clearButton:hover {
       background-color: #c83a5a;
-      transform: scale(1.05);
+      box-shadow: 0 0 22px rgba(239, 71, 111, 0.35);
     }
 
     /* Image container & thumbnails */
