@@ -258,7 +258,6 @@
       btn.addEventListener('click', () => document.body.className = 'theme-' + theme);
     });
 
-    // السكربت الأصلي بدون تعديل النصوص
     const fileInput = document.getElementById("fileInput");
     const imageContainer = document.getElementById("imageContainer");
     const addImageButton = document.getElementById("addImageButton");
@@ -351,7 +350,7 @@
     function dragEnd(e) { e.currentTarget.style.opacity = "1"; e.currentTarget.style.boxShadow = "none"; }
 
     convertButton.addEventListener("click", async () => {
-      if (!imageFiles.length) { alert("يرجى إضافة صور أولاً"); return; }
+      if (!imageFiles.length) { alert("لازم تختار صورة الاول .."); return; }
       loadingIndicator.style.display = "block";
       progressContainer.style.display = "block";
       progressBar.style.width = "0%";
