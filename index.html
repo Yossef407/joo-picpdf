@@ -239,13 +239,13 @@
     <div id="dropArea">اسحب الصور هنا أو اضغط لاختيارها</div>
     <div class="button-group">
       <button id="addImageButton">📷 اختر صور</button>
-      <button id="convertButton">🧾 تحويل إلى PDF</button>
+      <button id="convertButton">🧾 pdf تحويل الى</button>
       <button id="clearButton">🗑️ مسح الكل</button>
     </div>
     <div id="progressContainer"><div id="progressBar"></div></div>
     <div id="imageContainer" aria-live="polite" aria-label="صور مختارة"></div>
     <a id="pdfDownloadLink" target="_blank" aria-label="رابط تحميل ملف PDF">📥 تحميل بي دي اف</a>
-    <div id="loading">...جاري تحويل الصور إلى بي دي اف، يرجى الانتظار</div>
+    <div id="loading">...ياصبر ايوب</div>
   </div>
 
   <script>
@@ -378,24 +378,25 @@
       const blob = pdf.output("blob"); const url = URL.createObjectURL(blob);
       pdfDownloadLink.href = url;
       pdfDownloadLink.style.display = "inline-block";
-      pdfDownloadLink.textContent = `📥 تحميل PDF (${imageFiles.length} صفحة)`;
+      pdfDownloadLink.textContent = `📥 تحميل (${imageFiles.length} صُفَح)`;
     });
 
     function readFileAsDataURL(file) {
       return new Promise((res, rej) => {
         const r = new FileReader();
         r.onload = () => res(r.result);
-        r.onerror = () => rej("فشل في قراءة الملف");
+        r.onerror = () => rej("error 388 : couldnt read your picture "); // line num
         r.readAsDataURL(file);
       });
     }
     function loadImage(src) {
       return new Promise((res, rej) => {
-        const img = new Image();
+        const img = new Image(  );
         img.onload = () => res(img);
-        img.onerror = () => rej("فشل في تحميل الصورة");
+        img.onerror = () => rej("error  396 : couldnt load the file"); // lm
         img.src = src;
       });
+	  
     }
   </script>
 </body>
